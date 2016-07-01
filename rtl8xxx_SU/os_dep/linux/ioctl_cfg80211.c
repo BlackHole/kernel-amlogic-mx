@@ -393,6 +393,7 @@ void rtw_cfg80211_indicate_disconnect(_adapter *padapter)
 		return;
 	}
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,11,0)
 	if(pwdev->sme_state==CFG80211_SME_CONNECTING)
 		cfg80211_connect_result(padapter->pnetdev, NULL, NULL, 0, NULL, 0, 
 							WLAN_STATUS_UNSPECIFIED_FAILURE, GFP_ATOMIC/*GFP_KERNEL*/);
@@ -401,6 +402,10 @@ void rtw_cfg80211_indicate_disconnect(_adapter *padapter)
 			   				NULL, 0, GFP_ATOMIC);
 	else
 		printk("pwdev->sme_state=%d\n", pwdev->sme_state);
+#else
+	cfg80211_disconnected(padapter->pnetdev, 0,
+		   				NULL, 0, GFP_ATOMIC);
+#endif
 
 }
  	
