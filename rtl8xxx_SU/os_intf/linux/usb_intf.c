@@ -39,6 +39,8 @@
 #include <usb_osintf.h>
 #include <usb_hal.h>
 
+#include <linux/module.h>
+
 #if defined (PLATFORM_LINUX) && defined (PLATFORM_WINDOWS)
 
 #error "Shall be Linux or Windows, but not both!\n"
