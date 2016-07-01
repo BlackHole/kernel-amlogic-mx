@@ -1921,7 +1921,9 @@ thread_return xmit_thread(thread_context context)
 	init_hwxmits(hwxmits, hwentry);
 
 #ifdef PLATFORM_LINUX
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0))
 	daemonize("%s", padapter->pnetdev->name);
+#endif
 	allow_signal(SIGTERM);
 #endif
 

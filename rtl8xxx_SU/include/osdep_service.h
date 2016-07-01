@@ -390,7 +390,9 @@ static __inline void thread_enter(void *context)
 #ifdef PLATFORM_LINUX
 	//struct net_device *pnetdev = (struct net_device *)context;
 	//daemonize("%s", pnetdev->name);
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0))
 	daemonize("%s", "RTKTHREAD");
+#endif
 	allow_signal(SIGTERM);
 #endif
 }

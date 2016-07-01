@@ -216,7 +216,9 @@ thread_return event_thread(thread_context context)
 _func_enter_;
 	
 #ifdef PLATFORM_LINUX	
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0))
 	daemonize("%s", padapter->pnetdev->name);
+#endif
 	allow_signal(SIGTERM);
 #endif	
 
@@ -1226,7 +1228,9 @@ _func_enter_;
 
 	
 #ifdef PLATFORM_LINUX	
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0))
 	daemonize("%s", padapter->pnetdev->name);
+#endif
 	allow_signal(SIGTERM);
 #endif	
 
