@@ -258,6 +258,8 @@ static void rtw_dev_shutdown(struct device *dev)
 	{USB_DEVICE(0x0BDA, 0xE194)}, /*  - Edimax */ \
 	/****** 8192DU-WiFi Display Dongle ********/ \
 	{USB_DEVICE(0x2019, 0xAB2D)},/* Planex - Abocom ,5G dongle for WiFi Display */
+	{USB_DEVICE(0x0DF6, 0x004B)}, /* Sitecom */
+
 
 #define RTL8723A_USB_IDS \
 	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0x8724,0xff,0xff,0xff)}, /* 8723AU 1*1 */ \
