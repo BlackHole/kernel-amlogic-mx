@@ -347,23 +347,23 @@ u32 start_drv_threads(_adapter *padapter)
     RT_TRACE(_module_os_intfs_c_,_drv_info_,("+start_drv_threads\n"));
 
 #ifdef CONFIG_SDIO_HCI
-    padapter->xmitThread = kernel_thread(xmit_thread, padapter, CLONE_FS|CLONE_FILES);
+    padapter->xmitThread = kthread_run(xmit_thread, padapter, "RTW_XMIT_THREAD");
     if(padapter->xmitThread < 0)
 		_status = _FAIL;
 #endif
 
 #ifdef CONFIG_RECV_THREAD_MODE
-    padapter->recvThread = kernel_thread(recv_thread, padapter, CLONE_FS|CLONE_FILES);
+    padapter->recvThread = kthread_run(recv_thread, padapter, "RTW_RECV_THREAD");
     if(padapter->recvThread < 0)
 		_status = _FAIL;	
 #endif
 
-    padapter->cmdThread = kernel_thread(cmd_thread, padapter, CLONE_FS|CLONE_FILES);
+    padapter->cmdThread = kthread_run(cmd_thread, padapter, "RTW_CMD_THREAD");
     if(padapter->cmdThread < 0)
 		_status = _FAIL;		
 
 #ifdef CONFIG_EVENT_THREAD_MODE
-    padapter->evtThread = kernel_thread(event_thread, padapter, CLONE_FS|CLONE_FILES);
+    padapter->evtThread = kthread_run(event_thread, padapter, "RTW_EVENT_THREAD");
     if(padapter->evtThread < 0)
 		_status = _FAIL;		
 #endif
