@@ -843,7 +843,12 @@ static int cfg80211_rtw_set_default_key(struct wiphy *wiphy,
 
 static int cfg80211_rtw_get_station(struct wiphy *wiphy,
 				    struct net_device *ndev,
-				    u8 *mac, struct station_info *sinfo)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+				    const u8 *mac,
+#else
+				    u8 *mac,
+#endif
+				    struct station_info *sinfo)
 {
 
 	_adapter *padapter = wiphy_to_adapter(wiphy);
@@ -1050,7 +1055,10 @@ void rtw_cfg80211_surveydone_event_callback(_adapter *padapter)
 
 }
 
-static int cfg80211_rtw_scan(struct wiphy *wiphy, struct net_device *ndev,
+static int cfg80211_rtw_scan(struct wiphy *wiphy, 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,16,0))
+struct net_device *ndev,
+#endif
 			     struct cfg80211_scan_request *request)
 {
 #define RTW_CFG80211_SCAN_AMOUNT 1
@@ -1807,6 +1815,9 @@ static int cfg80211_rtw_disconnect(struct wiphy *wiphy, struct net_device *dev,
 }
 
 static int cfg80211_rtw_set_txpower(struct wiphy *wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+				    struct wireless_dev *wdev,
+#endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
 				    enum nl80211_tx_power_setting type, int mbm)
 #else	// (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
@@ -1843,7 +1854,11 @@ static int cfg80211_rtw_set_txpower(struct wiphy *wiphy,
 	return 0;
 }
 
-static int cfg80211_rtw_get_txpower(struct wiphy *wiphy, int *dbm)
+static int cfg80211_rtw_get_txpower(struct wiphy *wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+				    struct wireless_dev *wdev,
+#endif
+				    int *dbm)
 {
 	//_adapter *padapter = wiphy_to_adapter(wiphy);
 
@@ -1922,7 +1937,9 @@ static int cfg80211_rtw_flush_pmksa(struct wiphy *wiphy,
 	return 0;
 }
 
-static int	cfg80211_rtw_mgmt_tx(struct wiphy *wiphy, struct net_device *dev,
+static int	cfg80211_rtw_mgmt_tx(struct wiphy *wiphy,
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,16,0))
+			struct net_device *dev,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,38))
 			struct ieee80211_channel *chan, bool offchan,
 			enum nl80211_channel_type channel_type,
@@ -1934,7 +1951,12 @@ static int	cfg80211_rtw_mgmt_tx(struct wiphy *wiphy, struct net_device *dev,
 			bool channel_type_valid,
 #endif
 #endif	//(LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,38))
-			const u8 *buf, size_t len, u64 *cookie)
+			const u8 *buf, size_t len,
+#else
+			struct wireless_dev *wdev,
+			struct cfg80211_mgmt_tx_params *params,
+#endif
+			u64 *cookie)
 {
 #if 0
 	struct xmit_frame		*pmgntframe;
@@ -2141,7 +2163,12 @@ exit:
 	return 0;
 }
 
-static void cfg80211_rtw_mgmt_frame_register(struct wiphy *wiphy, struct net_device *dev,
+static void cfg80211_rtw_mgmt_frame_register(struct wiphy *wiphy, 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+	struct wireless_dev *wdev,
+#else
+	struct net_device *dev,
+#endif
 	u16 frame_type, bool reg)
 {
 #if 0
