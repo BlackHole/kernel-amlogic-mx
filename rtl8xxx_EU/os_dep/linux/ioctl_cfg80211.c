@@ -612,6 +612,12 @@ void rtw_cfg80211_ibss_indicate_connect(_adapter *padapter)
 	struct wireless_dev *pwdev = padapter->rtw_wdev;
 	struct cfg80211_bss *bss = NULL;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 15, 0)
+	WLAN_BSSID_EX *pnetwork = &(padapter->mlmeextpriv.mlmext_info.network);
+	struct ieee80211_channel *chan = NULL;
+	u32 freq;
+#endif
+
 	DBG_871X(FUNC_ADPT_FMT"\n", FUNC_ADPT_ARG(padapter));
 	if (pwdev->iftype != NL80211_IFTYPE_ADHOC) 
 	{
@@ -662,7 +668,20 @@ void rtw_cfg80211_ibss_indicate_connect(_adapter *padapter)
 			DBG_871X_LEVEL(_drv_always_, FUNC_ADPT_FMT" BSS not found !!\n", FUNC_ADPT_ARG(padapter));
 	}
 	//notify cfg80211 that device joined an IBSS
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 15, 0)
+	if (!(pnetwork) || !(padapter->rtw_wdev))
+		return;
+	
+	if (pnetwork->Configuration.DSConfig <= RTW_CH_MAX_2G_CHANNEL)
+		freq = rtw_ieee80211_channel_to_frequency(pnetwork->Configuration.DSConfig, IEEE80211_BAND_2GHZ);
+	else
+		freq = rtw_ieee80211_channel_to_frequency(pnetwork->Configuration.DSConfig, IEEE80211_BAND_5GHZ);
+	
+	chan = ieee80211_get_channel(padapter->rtw_wdev->wiphy, freq);
+	cfg80211_ibss_joined(padapter->pnetdev, cur_network->network.MacAddress, chan, GFP_ATOMIC);
+#else
 	cfg80211_ibss_joined(padapter->pnetdev, cur_network->network.MacAddress, GFP_ATOMIC);
+#endif
 }
 
 void rtw_cfg80211_indicate_connect(_adapter *padapter)
