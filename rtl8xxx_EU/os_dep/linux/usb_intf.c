@@ -257,7 +257,7 @@ static void rtw_dev_shutdown(struct device *dev)
 	{USB_DEVICE(0x1668, 0x8102)}, /*  -  */ \
 	{USB_DEVICE(0x0BDA, 0xE194)}, /*  - Edimax */ \
 	/****** 8192DU-WiFi Display Dongle ********/ \
-	{USB_DEVICE(0x2019, 0xAB2D)},/* Planex - Abocom ,5G dongle for WiFi Display */
+	{USB_DEVICE(0x2019, 0xAB2D)},/* Planex - Abocom ,5G dongle for WiFi Display */ \
 	{USB_DEVICE(0x0DF6, 0x004B)}, /* Sitecom */
 
 
