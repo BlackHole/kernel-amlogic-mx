@@ -45,6 +45,7 @@
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32))
 	#include <linux/sched.h>
+	#include <linux/kthread.h>
 #endif
 	#include <linux/sem.h>
 	#include <linux/netdevice.h>
