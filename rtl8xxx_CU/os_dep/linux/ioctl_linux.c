@@ -11248,7 +11248,9 @@ thread_return lbk_thread(thread_context context)
 	ok = 0;
 	fail = 0;
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0))
 	daemonize("%s", "RTW_LBK_THREAD");
+#endif
 	allow_signal(SIGTERM);
 
 	do {

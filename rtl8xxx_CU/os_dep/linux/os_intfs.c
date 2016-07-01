@@ -307,11 +307,15 @@ void rtw_proc_init_one(struct net_device *dev)
 			_rtw_memcpy(rtw_proc_name, RTW_PROC_NAME, sizeof(RTW_PROC_NAME));
 		}
 
+
 #if(LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24))
 		rtw_proc=create_proc_entry(rtw_proc_name, S_IFDIR, proc_net);
-#else
+#elif(LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0))
 		rtw_proc=create_proc_entry(rtw_proc_name, S_IFDIR, init_net.proc_net);
+#else
+		rtw_proc=proc_mkdir(rtw_proc_name, init_net.proc_net);
 #endif
+
 		if (rtw_proc == NULL) {
 			DBG_871X(KERN_ERR "Unable to create rtw_proc directory\n");
 			return;
