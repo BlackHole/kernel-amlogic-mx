@@ -1,8 +1,0 @@
-
-
-config AML_WATCHDOG
-	bool "Amlogic Watchdog"
-	default n
-	---help---
-	  This module works as watch dog for platform.
-
