@@ -321,23 +321,36 @@ void rtw_proc_init_one(struct net_device *dev)
 			return;
 		}
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 		entry = create_proc_read_entry("ver_info", S_IFREG | S_IRUGO, rtw_proc, proc_get_drv_version, dev);
+#else
+		entry = proc_create_data("ver_info", S_IFREG | S_IRUGO, rtw_proc, proc_get_drv_version, dev);
+#endif
 		if (!entry) {
 			DBG_871X("Unable to create_proc_read_entry!\n");
 			return;
 		}
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 		entry = create_proc_read_entry("log_level", S_IFREG | S_IRUGO,
 				   rtw_proc, proc_get_log_level, dev);
+#else
+		entry = proc_create_data("log_level", S_IFREG | S_IRUGO, rtw_proc, proc_get_log_level, dev);
+#endif
 		if (!entry) {
 			DBG_871X("Unable to create_proc_read_entry!\n");
 			return;
 		}
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 		entry->write_proc = proc_set_log_level;
-		
+#endif
 #ifdef DBG_MEM_ALLOC
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 		entry = create_proc_read_entry("mstat", S_IFREG | S_IRUGO,
 				   rtw_proc, proc_get_mstat, dev);
+#else
+		entry = proc_create_data("mstat", S_IFREG | S_IRUGO, rtw_proc, proc_get_mstat, dev);
+#endif
 		if (!entry) {
 			DBG_871X("Unable to create_proc_read_entry!\n");
 			return;
@@ -349,9 +362,13 @@ void rtw_proc_init_one(struct net_device *dev)
 
 	if(padapter->dir_dev == NULL)
 	{
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 		padapter->dir_dev = create_proc_entry(dev->name,
 					  S_IFDIR | S_IRUGO | S_IXUGO,
 					  rtw_proc);
+#else
+		padapter->dir_dev = proc_mkdir(dev->name,rtw_proc);
+#endif
 
 		dir_dev = padapter->dir_dev;
 
@@ -380,24 +397,35 @@ void rtw_proc_init_one(struct net_device *dev)
 
 	rtw_proc_cnt++;
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("write_reg", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_write_reg, dev);
+#else
+	entry = proc_create_data("write_reg", S_IFREG | S_IRUGO, dir_dev, proc_get_write_reg, dev);
+#endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n");
 		return;
 	}
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry->write_proc = proc_set_write_reg;
+#endif
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("read_reg", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_read_reg, dev);
+#else
+	entry = proc_create_data("read_reg", S_IFREG | S_IRUGO, dir_dev, proc_get_read_reg, dev);
+#endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n");
 		return;
 	}
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry->write_proc = proc_set_read_reg;
+#endif
 
-
-	entry = create_proc_read_entry("fwstate", S_IFREG | S_IRUGO,
+/*	entry = create_proc_read_entry("fwstate", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_fwstate, dev);
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n");
@@ -630,25 +658,27 @@ void rtw_proc_init_one(struct net_device *dev)
 		return;
 	}
 	entry->write_proc = proc_set_rssi_disp;
+*/
 
 #if defined(DBG_CONFIG_ERROR_DETECT)
-	entry = create_proc_read_entry("sreset", S_IFREG | S_IRUGO,
+/*	entry = create_proc_read_entry("sreset", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_sreset, dev);
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n");
 		return;
 	}
-	entry->write_proc = proc_set_sreset;
+	entry->write_proc = proc_set_sreset;*/
 #endif /* DBG_CONFIG_ERROR_DETECT */
 
 #ifdef CONFIG_DM_ADAPTIVITY
+/*
 	entry = create_proc_read_entry("dm_adaptivity", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_dm_adaptivity, dev);
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n");
 		return;
 	}
-	entry->write_proc = proc_set_dm_adaptivity;
+	entry->write_proc = proc_set_dm_adaptivity;*/
 #endif /* CONFIG_DM_ADAPTIVITY */
 
 }

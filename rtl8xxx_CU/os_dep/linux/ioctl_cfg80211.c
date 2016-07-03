@@ -648,14 +648,18 @@ void rtw_cfg80211_indicate_connect(_adapter *padapter)
 	else 
 	#endif
 	{
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,11,0)
 		DBG_8192C("pwdev->sme_state(b)=%d\n", pwdev->sme_state);
+#endif
 		cfg80211_connect_result(padapter->pnetdev, cur_network->network.MacAddress
 			, pmlmepriv->assoc_req+sizeof(struct rtw_ieee80211_hdr_3addr)+2
 			, pmlmepriv->assoc_req_len-sizeof(struct rtw_ieee80211_hdr_3addr)-2
 			, pmlmepriv->assoc_rsp+sizeof(struct rtw_ieee80211_hdr_3addr)+6
 			, pmlmepriv->assoc_rsp_len-sizeof(struct rtw_ieee80211_hdr_3addr)-6
 			, WLAN_STATUS_SUCCESS, GFP_ATOMIC);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,11,0)
 		DBG_8192C("pwdev->sme_state(a)=%d\n", pwdev->sme_state);
+#endif
 	}
 }
 
@@ -708,11 +712,11 @@ void rtw_cfg80211_indicate_disconnect(_adapter *padapter)
 			cfg80211_disconnected(padapter->pnetdev, 0, NULL, 0, GFP_ATOMIC);
 		//else
 			//DBG_8192C("pwdev->sme_state=%d\n", pwdev->sme_state);
+
+		DBG_8192C("pwdev->sme_state(a)=%d\n", pwdev->sme_state);
 #else
 		cfg80211_disconnected(padapter->pnetdev, 0, NULL, 0, GFP_ATOMIC);
 #endif
-
-		DBG_8192C("pwdev->sme_state(a)=%d\n", pwdev->sme_state);
 	}
 }
  	
@@ -4692,6 +4696,12 @@ static int cfg80211_rtw_mgmt_tx(struct wiphy *wiphy,
 #endif
 	u64 *cookie)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,14,0))
+	const u8 *buf = params->buf;
+	size_t len = params->len;
+	struct ieee80211_channel *chan = params->chan;
+#endif
+
 	_adapter *padapter = (_adapter *)wiphy_to_adapter(wiphy);
 	struct rtw_wdev_priv *pwdev_priv = wdev_to_priv(padapter->rtw_wdev);
 	int ret = 0;
